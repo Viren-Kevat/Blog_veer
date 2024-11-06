@@ -1,0 +1,240 @@
+/* Reset and base styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Georgia", Times, serif;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+  background-image: url("/ur_name.jpg"); /* Add your image path here */
+  background-size: cover; /* Ensure the image covers the entire viewport */
+  background-position: center;
+  background-attachment: fixed; /* Makes the image stay in place when scrolling */
+  background-repeat: no-repeat;
+}
+
+/* Container for the entire page content */
+/* .container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+} */
+.container {
+  max-width: 900px;
+  margin: auto;
+  backdrop-filter: blur(10px); /* Adjust the blur intensity as needed */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.3
+  ); /* Optional: semi-transparent background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styling */
+h1 {
+  text-align: center;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #181818;
+  margin: 30px 0 5px 0;
+}
+
+/* Style the .user-card to stand out against the blurred container */
+.user-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.user-card:last-child {
+  border-bottom: none;
+}
+
+.user-card:hover {
+  background-color: #f9f9f9;
+  transition: background 0.3s;
+}
+
+.user-card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+/* Button styling */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center; /* Center the buttons */
+}
+
+.create-button,
+button {
+  padding: 10px 15px;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.create-button {
+  background-color: #28a745;
+  margin-bottom: 20px;
+}
+
+.create-button:hover {
+  background-color: #218838;
+}
+
+.edit-button {
+  background-color: #17a2b8;
+  position: relative;
+  left: -24rem;
+}
+
+.edit-button:hover {
+  background-color: #138496;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  position: relative;
+  left: -17rem;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+  position: relative;
+  left: -17rem;
+}
+
+/* Date Styling */
+.date {
+  font-weight: bold;
+  color: #555;
+  text-align: right;
+  margin-left: 20px;
+  /* Space between date and other content */
+}
+.blog-content {
+  margin-top: 1em;
+  line-height: 1.6;
+  font-family: Arial, sans-serif;
+}
+
+.blog-post h2 {
+  color: #333;
+  font-size: 1.5em;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .user-card {
+    padding: 15px;
+    width: 100%;
+    align-items: flex-start; /* Align items to the start for better mobile display */
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center; /* Center buttons */
+  }
+
+  .create-button {
+    margin: 15px 0;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 100%; /* Full-width buttons for smaller screens */
+  }
+
+  .user-card h2 {
+    font-size: 1.5em; /* Larger title on small screens */
+  }
+
+  /* Stack elements vertically */
+  .user-card p,
+  .date {
+    text-align: left; /* Align text to left */
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .date {
+    text-align: left; /* Align the date to the left */
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-card h2 {
+    font-size: 1.3em; /* Slightly smaller title */
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .create-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .edit-button,
+  .delete-button {
+    left: 0rem;
+  }
+
+  input[type="password"] {
+    left: 0rem;
+    font-size: 14px; /* Smaller input font */
+  }
+}

@@ -123,7 +123,7 @@ app.post("/update/:id", (req, res) => {
   });
 });
 
-let port = "210";
+let port = "3306";
 app.listen(port, () => {
   console.log(`app is listening on port http://localhost:${port}`);
 });

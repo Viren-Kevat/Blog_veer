@@ -16,7 +16,7 @@ let blog = mysql.createConnection(url);
 
 //home page
 app.get("/", (req, res) => {
-  let q = "SELECT * FROM railway.USERS ORDER BY date DESC";
+  let q = "SELECT * FROM railway.users ORDER BY date DESC";
   try {
     blog.query(q, (err, result) => {
       if (err) throw err;
@@ -37,7 +37,7 @@ app.get("/add-user", (req, res) => {
 app.post("/add-user", (req, res) => {
   let id = uuidv4();
   let { name, email, para, password, enroll } = req.body;
-  let q = `INSERT INTO railway.USERS (id, name, email, para, password, enroll, date) VALUES (?, ?, ?, ?, ?, ?, CURDATE())`;
+  let q = `INSERT INTO railway.users (id, name, email, para, password, enroll, date) VALUES (?, ?, ?, ?, ?, ?, CURDATE())`;
   try {
     blog.query(q, [id, name, email, para, password, enroll], (err, result) => {
       if (err) throw err;
@@ -57,7 +57,7 @@ app.post("/delete/:id", (req, res) => {
   const { id } = req.params;
   const userPassword = req.body.password;
 
-  const qSelect = `SELECT password FROM railway.USERS WHERE id='${id}'`;
+  const qSelect = `SELECT password FROM railway.users WHERE id='${id}'`;
   blog.query(qSelect, (err, results) => {
     if (err) {
       console.error("Error retrieving password:", err);
@@ -65,7 +65,7 @@ app.post("/delete/:id", (req, res) => {
     }
 
     if (results.length > 0 && results[0].password === userPassword) {
-      const qDelete = `DELETE FROM railway.USERS WHERE id='${id}'`;
+      const qDelete = `DELETE FROM railway.users WHERE id='${id}'`;
       blog.query(qDelete, (err) => {
         if (err) {
           console.error("Error deleting post:", err);
@@ -85,7 +85,7 @@ app.post("/delete/:id", (req, res) => {
 
 app.get("/user/:id", (req, res) => {
   let { id } = req.params;
-  let q = `SELECT * FROM railway.USERS WHERE id='${id}'`;
+  let q = `SELECT * FROM railway.users WHERE id='${id}'`;
   try {
     blog.query(q, (err, result) => {
       if (err) throw err;

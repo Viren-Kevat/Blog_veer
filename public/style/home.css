@@ -200,7 +200,6 @@ input[type="password"] {
 .small-card {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto;
 }
 
 /* Media query for responsiveness */
@@ -252,7 +251,6 @@ input[type="password"] {
   }
   .small-card {
     width: 48%; /* Adjust width to display two cards side by side */
-    margin: 10px; /* Add some space between cards */
   }
 }
 

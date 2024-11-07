@@ -4,6 +4,7 @@ const app = exp();
 const mysql = require("mysql2");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+require("dotenv").config();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
@@ -12,7 +13,7 @@ app.use(exp.json());
 app.use(exp.static(path.join(__dirname, "/public/style")));
 app.use(exp.static(path.join(__dirname, "/public/img")));
 
-const url = `mysql://root:fpkVrILpMvontsTIpyXFSkxPlRYznbaf@junction.proxy.rlwy.net:12757/railway`;
+const url = process.env.MONGODB;
 let blog = mysql.createConnection(url);
 
 // Table creation query

@@ -198,7 +198,7 @@ input[type="password"] {
 }
 
 /* Media query for responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .container {
     padding: 15px;
   }
@@ -234,9 +234,16 @@ input[type="password"] {
     margin-left: 0;
     width: 100%;
   }
+  .edit-button,
+  .delete-button,
+  input[type="password"] {
+    position: relative;
+    left: 0rem;
+  }
 
   .date {
-    text-align: left; /* Align the date to the left */
+    position: relative;
+    text-align: end; /* Align the date to the left */
     margin-top: 10px;
   }
 }
@@ -268,5 +275,10 @@ input[type="password"] {
   .blog-content {
     max-height: 26rem; /* Set the maximum height for the scrollable area */
     overflow-y: auto; /* Enable vertical scrolling */
+  }
+  .date {
+    position: relative;
+    text-align: end; /* Align the date to the left */
+    margin-top: 10px;
   }
 }

@@ -12,7 +12,7 @@ app.use(exp.json());
 app.use(exp.static(path.join(__dirname, "/public/style")));
 app.use(exp.static(path.join(__dirname, "/public/img")));
 
-const url = `mysql://root:elGEQUojuwIBuGPsmoINrEhymQZqmwKu@junction.proxy.rlwy.net:12504/railway`;
+const url = `mysql://root:fpkVrILpMvontsTIpyXFSkxPlRYznbaf@junction.proxy.rlwy.net:12757/railway`;
 let blog = mysql.createConnection(url);
 
 // Table creation query

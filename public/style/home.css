@@ -228,8 +228,7 @@ input[type="password"] {
   }
 
   /* Stack elements vertically */
-  .user-card p,
-  .date {
+  .user-card p {
     text-align: left; /* Align text to left */
     margin-left: 0;
     width: 100%;

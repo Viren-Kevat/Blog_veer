@@ -197,6 +197,12 @@ input[type="password"] {
   font-size: 1.5em;
 }
 
+.small-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 /* Media query for responsiveness */
 @media (max-width: 900px) {
   .container {
@@ -244,6 +250,10 @@ input[type="password"] {
     text-align: end; /* Align the date to the left */
     margin-top: 10px;
   }
+  .small-card {
+    width: 48%; /* Adjust width to display two cards side by side */
+    margin: 10px; /* Add some space between cards */
+  }
 }
 
 @media (max-width: 480px) {
@@ -282,6 +292,7 @@ input[type="password"] {
   }
 
   .small-card {
-    min-width: 335px;
+    min-width: auto; /* Remove fixed min-width to prevent overflow */
+    width: 100%; /* Take full width on small screens */
   }
 }

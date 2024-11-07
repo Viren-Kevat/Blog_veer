@@ -83,3 +83,7 @@ Once deployed, your app should be live and connected to your MySQL database.
 git clone https://github.com/yourusername/blogging-platform.git
 cd blogging-platform
 ```
+
+## 👩‍💻 About the Developer
+
+Hello! I’m Virenkumar, a passionate tech enthusiast and student at Government Engineering College Modasa, pursuing a Bachelor of Engineering in Information Technology. This project showcases my interest in web development and building user-friendly platforms.

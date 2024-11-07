@@ -11,25 +11,47 @@ app.use(exp.urlencoded({ extended: true }));
 app.use(exp.json());
 app.use(exp.static(path.join(__dirname, "/public/style")));
 app.use(exp.static(path.join(__dirname, "/public/img")));
+
 const url = `mysql://root:iwrZxaYIINwcPMqERZPzyBvVcFDyMgHV@junction.proxy.rlwy.net:14184/railway`;
 let blog = mysql.createConnection(url);
 
-//home page
-app.get("/", (req, res) => {
-  let q = "SELECT * FROM railway.veer ORDER BY date DESC";
-  try {
-    blog.query(q, (err, result) => {
-      if (err) throw err;
-      let users = result;
-      res.render("home.ejs", { users });
-    });
-  } catch (err) {
-    console.log("error in q");
-  }
+// Table creation query
+const createTableQuery = `
+  CREATE TABLE IF NOT EXISTS veer (
+    id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(40),
+    email VARCHAR(60),
+    para VARCHAR(10000),
+    password VARCHAR(255),
+    enroll VARCHAR(100),
+    date DATE
+  )
+`;
+
+// Create the table if it doesn't exist
+blog.connect((err) => {
+  if (err) throw err;
+  console.log("Connected to MySQL database");
+
+  blog.query(createTableQuery, (err) => {
+    if (err) {
+      console.error("Error creating table:", err);
+      return;
+    }
+    console.log("Table 'veer' is ready.");
+  });
 });
 
-// addnew user
+// Home page
+app.get("/", (req, res) => {
+  let q = "SELECT * FROM veer ORDER BY date DESC";
+  blog.query(q, (err, result) => {
+    if (err) throw err;
+    res.render("home.ejs", { users: result });
+  });
+});
 
+// Add new user
 app.get("/add-user", (req, res) => {
   res.render("adduser.ejs");
 });
@@ -37,93 +59,66 @@ app.get("/add-user", (req, res) => {
 app.post("/add-user", (req, res) => {
   let id = uuidv4();
   let { name, email, para, password, enroll } = req.body;
-  let q = `INSERT INTO railway.veer (id, name, email, para, password, enroll, date) VALUES (?, ?, ?, ?, ?, ?, CURDATE())`;
-  try {
-    blog.query(q, [id, name, email, para, password, enroll], (err, result) => {
-      if (err) throw err;
-      res.redirect("/");
-    });
-  } catch (err) {
-    console.log("Error in adding user");
-    res.json({ success: false });
-  }
+  let q = `INSERT INTO veer (id, name, email, para, password, enroll, date) VALUES (?, ?, ?, ?, ?, ?, CURDATE())`;
+  blog.query(q, [id, name, email, para, password, enroll], (err) => {
+    if (err) throw err;
+    res.redirect("/");
+  });
 });
 
-// delete user
-
-// Route to handle post deletion
-
+// Delete user
 app.post("/delete/:id", (req, res) => {
   const { id } = req.params;
   const userPassword = req.body.password;
 
-  const qSelect = `SELECT password FROM railway.veer WHERE id='${id}'`;
-  blog.query(qSelect, (err, results) => {
-    if (err) {
-      console.error("Error retrieving password:", err);
-      return res.status(500).send("Server error");
-    }
+  const qSelect = `SELECT password FROM veer WHERE id=?`;
+  blog.query(qSelect, [id], (err, results) => {
+    if (err) return res.status(500).send("Server error");
 
     if (results.length > 0 && results[0].password === userPassword) {
-      const qDelete = `DELETE FROM railway.veer WHERE id='${id}'`;
-      blog.query(qDelete, (err) => {
-        if (err) {
-          console.error("Error deleting post:", err);
-          return res.status(500).send("Server error");
-        }
+      const qDelete = `DELETE FROM veer WHERE id=?`;
+      blog.query(qDelete, [id], (err) => {
+        if (err) return res.status(500).send("Server error");
         res.redirect("/");
       });
     } else {
-      console.log("Incorrect password provided.");
-      // res.status(403).send("Incorrect password");
       res.render("delete.ejs");
     }
   });
 });
 
-// edit side
-
+// Edit user
 app.get("/user/:id", (req, res) => {
   let { id } = req.params;
-  let q = `SELECT * FROM railway.veer WHERE id='${id}'`;
-  try {
-    blog.query(q, (err, result) => {
-      if (err) throw err;
-      let post = result[0];
-      res.render("edit.ejs", { post });
-    });
-  } catch (err) {
-    console.log("error in edit");
-  }
+  let q = `SELECT * FROM veer WHERE id=?`;
+  blog.query(q, [id], (err, result) => {
+    if (err) throw err;
+    res.render("edit.ejs", { post: result[0] });
+  });
 });
 
 app.post("/update/:id", (req, res) => {
   const { id } = req.params;
   const { name, para, email, password, enroll, date } = req.body;
 
-  const authQuery = `SELECT PASSWORD FROM railway.veer WHERE id = ?`;
-
+  const authQuery = `SELECT password FROM veer WHERE id = ?`;
   blog.query(authQuery, [id], (err, result) => {
     if (err) throw err;
 
-    // authantication
-    if (result.length > 0 && result[0].PASSWORD === password) {
-      const updateQuery = `UPDATE railway.veer SET name = ?, para = ?, email = ?,enroll=?,date = IFNULL(?, CURDATE()) WHERE id = ?`;
+    if (result.length > 0 && result[0].password === password) {
+      const updateQuery = `UPDATE veer SET name = ?, para = ?, email = ?, enroll = ?, date = IFNULL(?, CURDATE()) WHERE id = ?`;
       blog.query(updateQuery, [name, para, email, enroll, date, id], (err) => {
-        if (err) {
-          console.error("Error updating post:", err);
-          return res.status(500).send("Error updating post");
-        }
+        if (err) return res.status(500).send("Error updating post");
         res.redirect("/");
       });
     } else {
-      // res.send("Incorrect password.");
       res.render("promt.ejs", { userId: id });
     }
   });
 });
 
+// Set the port and start the server
 let port = "3306";
 app.listen(port, () => {
-  console.log(`app is listening on port http://localhost:${port}`);
+  console.log(`App is listening on port http://localhost:${port}`);
 });

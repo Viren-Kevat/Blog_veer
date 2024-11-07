@@ -19,7 +19,7 @@
       <!-- Iterate over the users array -->
       <% users.forEach(user => { %>
       <div class="user-card">
-        <div>
+        <div class="small-card">
           <p class="date">
             <strong>Date:</strong>
             <%= user.date ? user.date.toISOString().split('T')[0] :

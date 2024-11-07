@@ -276,9 +276,14 @@ input[type="password"] {
     max-height: 26rem; /* Set the maximum height for the scrollable area */
     overflow-y: auto; /* Enable vertical scrolling */
   }
+
   .date {
     position: relative;
     text-align: end; /* Align the date to the left */
     margin-top: 10px;
+  }
+
+  .small-card {
+    min-width: 335px;
   }
 }

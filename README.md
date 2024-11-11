@@ -67,7 +67,7 @@ Here's a quick look at the project's organized file structure:
 - **POST /delete/:id** - **Delete Post**: Securely delete a post with password verification.
 
 ## 🚀 Deployment 
-###Database Deployment on Railway
+### Database Deployment on Railway
 1. Go to your Railway dashboard and create a new project.
 2. Add MySQL as a service and configure your database credentials.
 3. Connect your GitHub repository to Railway and deploy.

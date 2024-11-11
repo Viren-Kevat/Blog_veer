@@ -35,7 +35,9 @@ Using EJS templates, each page is rendered dynamically for faster loads and a re
 - **MySQL**: A relational database that securely stores and organizes blog posts.
 - **EJS**: A template engine allowing dynamic HTML rendering for smooth page transitions and an enhanced user experience.
 - **UUID**: Generates unique IDs for each blog post, providing consistency and security.
-- **Railway**: Manages the MySQL database in the cloud, ensuring your data is available wherever you go.
+- **Railway**: Manages the MySQL database in the cloud.
+- **Vercel**: Hosts the server for fast and scalable performance.
+
 
 ## 📂 Project Structure
 
@@ -64,16 +66,15 @@ Here's a quick look at the project's organized file structure:
 - **POST /update/:id** - **Update Post**: Endpoint to save edits to a post.
 - **POST /delete/:id** - **Delete Post**: Securely delete a post with password verification.
 
-## 🚀 Deployment on Railway
-
-To deploy this app on Railway:
-
+## 🚀 Deployment 
+###Database Deployment on Railway
 1. Go to your Railway dashboard and create a new project.
-2. Add **MySQL** as a service and configure your database credentials.
-3. Connect your GitHub repository to Railway.
-4. Deploy the app!
+2. Add MySQL as a service and configure your database credentials.
+3. Connect your GitHub repository to Railway and deploy.
 
-Once deployed, your app should be live and connected to your MySQL database.
+### Server Deployment on Vercel
+1. Navigate to Vercel and create a new project.
+2. Link your GitHub repository, configure any necessary environment variables, and deploy your server.
 
 ## 🛠 Installation
 

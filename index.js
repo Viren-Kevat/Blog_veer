@@ -12,16 +12,16 @@ app.use(exp.urlencoded({ extended: true }));
 app.use(exp.json());
 app.use(exp.static(path.join(__dirname, "/public/style")));
 app.use(exp.static(path.join(__dirname, "/public/img")));
-
+// viren
 const url = process.env.DATABASE_URL;
 let blog = mysql.createConnection(url);
 
 blog.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err.stack);
-        return;
-    }
-    console.log('Connected to database.');
+  if (err) {
+    console.error("Database connection failed:", err.stack);
+    return;
+  }
+  console.log("Connected to database.");
 });
 
 // Table creation query

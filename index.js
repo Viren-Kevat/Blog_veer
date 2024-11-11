@@ -16,6 +16,14 @@ app.use(exp.static(path.join(__dirname, "/public/img")));
 const url = process.env.DATABASE_URL;
 let blog = mysql.createConnection(url);
 
+blog.connect((err) => {
+    if (err) {
+        console.error('Database connection failed:', err.stack);
+        return;
+    }
+    console.log('Connected to database.');
+});
+
 // Table creation query
 const createTableQuery = `
   CREATE TABLE IF NOT EXISTS veer (

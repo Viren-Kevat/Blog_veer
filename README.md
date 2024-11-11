@@ -80,7 +80,7 @@ Once deployed, your app should be live and connected to your MySQL database.
 ### Clone the Repository:
 
 ```bash
-git clone https://github.com/viren-kevat/blogging-platform.git
+git clone https://github.com/viren-kevat/blog_veer.git
 cd blogging-platform
 ```
 

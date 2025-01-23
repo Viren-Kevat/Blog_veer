@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, "/public/img")));
 // Connect to MongoDB
 const mongoURI = process.env.MONGODB_URI;
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoURI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
 

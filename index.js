@@ -1,63 +1,42 @@
-const { log } = require("console");
-const exp = require("express");
-const app = exp();
-const mysql = require("mysql2");
+const express = require("express");
+const mongoose = require("mongoose");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
+const app = express();
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
-app.use(exp.urlencoded({ extended: true }));
-app.use(exp.json());
-app.use(exp.static(path.join(__dirname, "/public/style")));
-app.use(exp.static(path.join(__dirname, "/public/img")));
-// viren
-const url = process.env.DATABASE_URL;
-let blog = mysql.createConnection(url);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "/public/style")));
+app.use(express.static(path.join(__dirname, "/public/img")));
 
-blog.connect((err) => {
-  if (err) {
-    console.error("Database connection failed:", err.stack);
-    return;
-  }
-  console.log("Connected to database.");
+// Connect to MongoDB
+const mongoURI = process.env.MONGODB_URI;
+mongoose
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Could not connect to MongoDB", err));
+
+// Define the schema and model
+const userSchema = new mongoose.Schema({
+  id: { type: String, default: uuidv4 },
+  name: String,
+  email: String,
+  para: String,
+  password: String,
+  enroll: String,
+  date: { type: Date, default: Date.now },
 });
 
-// Table creation query
-const createTableQuery = `
-  CREATE TABLE IF NOT EXISTS veer (
-    id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(40),
-    email VARCHAR(60),
-    para VARCHAR(10000),
-    password VARCHAR(255),
-    enroll VARCHAR(100),
-    date DATE
-  )
-`;
-
-// Create the table if it doesn't exist
-blog.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to MySQL database");
-
-  blog.query(createTableQuery, (err) => {
-    if (err) {
-      console.error("Error creating table:", err);
-      return;
-    }
-    console.log("Table 'veer' is ready.");
-  });
-});
+const User = mongoose.model("User", userSchema);
 
 // Home page
-app.get("/", (req, res) => {
-  let q = "SELECT * FROM veer ORDER BY date DESC";
-  blog.query(q, (err, result) => {
-    if (err) throw err;
-    res.render("home.ejs", { users: result });
-  });
+app.get("/", async (req, res) => {
+  const users = await User.find().sort({ date: -1 });
+  res.render("home.ejs", { users });
 });
 
 // Add new user
@@ -65,69 +44,54 @@ app.get("/add-user", (req, res) => {
   res.render("adduser.ejs");
 });
 
-app.post("/add-user", (req, res) => {
-  let id = uuidv4();
-  let { name, email, para, password, enroll } = req.body;
-  let q = `INSERT INTO veer (id, name, email, para, password, enroll, date) VALUES (?, ?, ?, ?, ?, ?, CURDATE())`;
-  blog.query(q, [id, name, email, para, password, enroll], (err) => {
-    if (err) throw err;
-    res.redirect("/");
-  });
+app.post("/add-user", async (req, res) => {
+  const { name, email, para, password, enroll } = req.body;
+  const newUser = new User({ name, email, para, password, enroll });
+  await newUser.save();
+  res.redirect("/");
 });
 
 // Delete user
-app.post("/delete/:id", (req, res) => {
+app.post("/delete/:id", async (req, res) => {
   const { id } = req.params;
   const userPassword = req.body.password;
 
-  const qSelect = `SELECT password FROM veer WHERE id=?`;
-  blog.query(qSelect, [id], (err, results) => {
-    if (err) return res.status(500).send("Server error");
-
-    if (results.length > 0 && results[0].password === userPassword) {
-      const qDelete = `DELETE FROM veer WHERE id=?`;
-      blog.query(qDelete, [id], (err) => {
-        if (err) return res.status(500).send("Server error");
-        res.redirect("/");
-      });
-    } else {
-      res.render("delete.ejs");
-    }
-  });
+  const user = await User.findOne({ id });
+  if (user && user.password === userPassword) {
+    await User.deleteOne({ id });
+    res.redirect("/");
+  } else {
+    res.render("delete.ejs");
+  }
 });
 
 // Edit user
-app.get("/user/:id", (req, res) => {
-  let { id } = req.params;
-  let q = `SELECT * FROM veer WHERE id=?`;
-  blog.query(q, [id], (err, result) => {
-    if (err) throw err;
-    res.render("edit.ejs", { post: result[0] });
-  });
+app.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findOne({ id });
+  res.render("edit.ejs", { post: user });
 });
 
-app.post("/update/:id", (req, res) => {
+app.post("/update/:id", async (req, res) => {
   const { id } = req.params;
   const { name, para, email, password, enroll, date } = req.body;
 
-  const authQuery = `SELECT password FROM veer WHERE id = ?`;
-  blog.query(authQuery, [id], (err, result) => {
-    if (err) throw err;
-
-    if (result.length > 0 && result[0].password === password) {
-      const updateQuery = `UPDATE veer SET name = ?, para = ?, email = ?, enroll = ?, date = IFNULL(?, CURDATE()) WHERE id = ?`;
-      blog.query(updateQuery, [name, para, email, enroll, date, id], (err) => {
-        if (err) return res.status(500).send("Error updating post");
-        res.redirect("/");
-      });
-    } else {
-      res.render("promt.ejs", { userId: id });
-    }
-  });
+  const user = await User.findOne({ id });
+  if (user && user.password === password) {
+    user.name = name;
+    user.para = para;
+    user.email = email;
+    user.enroll = enroll;
+    user.date = date || Date.now();
+    await user.save();
+    res.redirect("/");
+  } else {
+    res.render("promt.ejs", { userId: id });
+  }
 });
 
 // Set the port and start the server
-let port = "3306";
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`App is listening on port http://localhost:${port}`);
 });
